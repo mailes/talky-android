@@ -6,7 +6,8 @@
 <a href="https://talkytalky.im/download.html?utm_source=github&utm_medium=readme&utm_campaign=talky_android">Downloads</a> ·
 <a href="docs/BUILDING.md">Build from source</a> ·
 <a href="https://github.com/mailes/talky-ios">iOS source</a> ·
-<a href="README.zh-CN.md">简体中文</a>
+<a href="https://github.com/mailes/talky-desktop">Desktop source</a> ·
+  <a href="README.zh-CN.md">简体中文</a>
 </p>
 
 Talky is a messaging app with private conversations, groups, calls, themes, and **Jarvis**, a personal AI assistant inside your chats. This repository contains the Android client source, derived from Telegram Android and OwpenGram, with Talky product and service integration.

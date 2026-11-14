@@ -2,7 +2,7 @@
 
 **聊天、群组，以及对话里的个人 AI 助手 Jarvis。**
 
-[官网](https://talkytalky.im/zh/?utm_source=github&utm_medium=readme&utm_campaign=talky_android) · [下载](https://talkytalky.im/zh/download.html?utm_source=github&utm_medium=readme&utm_campaign=talky_android) · [构建说明](docs/BUILDING.md) · [iOS 源码](https://github.com/mailes/talky-ios) · [English](README.md)
+[官网](https://talkytalky.im/zh/?utm_source=github&utm_medium=readme&utm_campaign=talky_android) · [下载](https://talkytalky.im/zh/download.html?utm_source=github&utm_medium=readme&utm_campaign=talky_android) · [构建说明](docs/BUILDING.md) · [iOS 源码](https://github.com/mailes/talky-ios) · [桌面端源码](https://github.com/mailes/talky-desktop) · [English](README.md)
 
 这是 Talky 安卓客户端源码，基于 Telegram Android 和 OwpenGram 开发。支持消息、群组、媒体分享、语音视频通话、主题、贴纸及 Jarvis 助手入口。AI 功能的具体可用性取决于服务配置和订阅。
 
