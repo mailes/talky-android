@@ -1,0 +1,22 @@
+name: Bug report
+description: Report a reproducible issue in Talky for Android.
+body:
+  - type: markdown
+    attributes:
+      value: Never include credentials, private messages or verification codes. Use private vulnerability reporting for security issues.
+  - type: input
+    id: environment
+    attributes:
+      label: Device and Android version
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce and expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or redacted logs

@@ -1,0 +1,149 @@
+[
+  {
+    "path": "TMessagesProj/jni/td",
+    "sha": "022d60202e446ad1287b9fb68e687c8a0760788b",
+    "url": "https://github.com/tdlib/td",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/tgcalls",
+    "sha": "545f5ae599f8282e1ae3f38aaff166d179d75703",
+    "url": "https://github.com/TelegramMessenger/tgcalls",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/absl",
+    "sha": "54fac219c4ef0bc379dfffb0b8098725d77ac81b",
+    "url": "https://github.com/abseil/abseil-cpp",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/boost-regex",
+    "sha": "4cbcd3078e6ae10d05124379623a1bf03fcb9350",
+    "url": "https://github.com/boostorg/regex",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/boringssl",
+    "sha": "2b44a3701a4788e1ef866ddc7f143060a3d196c9",
+    "url": "https://github.com/google/boringssl",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/dav1d",
+    "sha": "54706fc6bc0cdecab7e9593974a4039cc038fca7",
+    "url": "https://github.com/videolan/dav1d",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/ffmpeg",
+    "sha": "8dca1586f468bfcbb78ae3ed618af1361d9f140a",
+    "url": "https://github.com/FFmpeg/FFmpeg",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/libprisma",
+    "sha": "94640c63c20eacdf70e37e23198d9ab53c802ebd",
+    "url": "https://github.com/TelegramMessenger/libprisma",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/libvpx",
+    "sha": "6df3ec34557879fff673706f4a1d9fbd0f3a6f0e",
+    "url": "https://github.com/webmproject/libvpx",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/libyuv",
+    "sha": "28ce69c2744a6aafdb58564e7b884aec3f66be5f",
+    "url": "https://chromium.googlesource.com/libyuv/libyuv",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/openh264",
+    "sha": "652bdb7719f30b52b08e506645a7322ff1b2cc6f",
+    "url": "https://github.com/cisco/openh264",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/wamr",
+    "sha": "25bd7eb63e828e4bd242cc9b38d260b4b31c6605",
+    "url": "https://github.com/wasm-micro-runtime/wasm-micro-runtime",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/xiph/ogg",
+    "sha": "be05b13e98b048f0b5a0f5fa8ce514d56db5f822",
+    "url": "https://github.com/xiph/ogg",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/xiph/opus",
+    "sha": "22244de5a79bd1d6d623c32e72bf1954b56235be",
+    "url": "https://github.com/xiph/opus",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/third_party/xiph/opusfile",
+    "sha": "a55c164e9891a9326188b7d4d216ec9a88373739",
+    "url": "https://github.com/xiph/opusfile",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/tlottie",
+    "sha": "31f1b542f88e7b4be9a01e749920d857535fc715",
+    "url": "https://github.com/dkaraush/tlottie",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/twidget/twidget",
+    "sha": "4769d72c5c5a9bace3c7bd8b6308cb79bc150bab",
+    "url": "https://github.com/TelegramMessenger/twidget",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/twidget/widget-sandbox",
+    "sha": "c498cefddefaba765282c9f3ab0b330f4bc990f6",
+    "url": "https://github.com/TelegramMessenger/widget-sandbox",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/jni/wallet-engine",
+    "sha": "5c65e47cb8d68727c20d89382d0bc51292486b9a",
+    "url": "https://github.com/dkaraush/wallet-engine",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj/lib/jlatexmath",
+    "sha": "919e50b2f6f64b04b712cdb13d558ff9ecf9c8ed",
+    "url": "https://github.com/dkaraush/jlatexmath-android",
+    "repository_public": true,
+    "public_commit_accessible": true
+  },
+  {
+    "path": "TMessagesProj_Modules/media",
+    "sha": "09b6c97c0d691c50cd4541e1573995d4066d6f5c",
+    "url": "https://github.com/Arseny271/media",
+    "repository_public": true,
+    "public_commit_accessible": true
+  }
+]

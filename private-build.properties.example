@@ -1,0 +1,13 @@
+# Copy to private-build.properties (ignored by Git). Never commit real values.
+TALKY_API_ID=
+TALKY_API_HASH=
+# Optional provider features require your own configuration.
+TALKY_GOOGLE_MAPS_KEY=
+TALKY_SAFETYNET_KEY=
+TALKY_GOOGLE_AUTH_CLIENT_ID=
+TALKY_HUAWEI_APP_ID=
+# Required for signed standalone/release APKs; use an absolute path outside Git.
+TALKY_RELEASE_STORE_FILE=
+TALKY_RELEASE_STORE_PASSWORD=
+TALKY_RELEASE_KEY_ALIAS=
+TALKY_RELEASE_KEY_PASSWORD=
