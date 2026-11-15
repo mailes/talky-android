@@ -1031,6 +1031,23 @@ public class ConnectionsManager extends BaseController {
     public static native void native_setNetworkAvailable(int currentAccount, boolean value, int networkType, boolean slow);
     public static native void native_resumeNetwork(int currentAccount, boolean partial);
     public static native long native_getCurrentTimeMillis(int currentAccount);
+    public void requestJarvisSessionTicket(JarvisTicketCallback completion) {
+        final long userId = org.telegram.messenger.UserConfig.getInstance(currentAccount).getClientUserId();
+        if (userId <= 0) { completion.onTicket(""); return; }
+        native_requestJarvisTicket(currentAccount, userId, ticket -> {
+            // Discard tickets if logout or an account replacement raced the native callback.
+            boolean sameUser = org.telegram.messenger.UserConfig.getInstance(currentAccount).getClientUserId() == userId;
+            completion.onTicket(sameUser ? ticket : "");
+        });
+    }
+
+    public interface JarvisTicketCallback {
+        void onTicket(String ticket);
+    }
+
+    // Callback runs on the native network thread. Never persist or log tickets.
+    public static native void native_requestJarvisTicket(int account, long userId, JarvisTicketCallback callback);
+
     public static native int native_getCurrentTime(int currentAccount);
     public static native int native_getCurrentPingTime(int currentAccount);
     public static native int native_getCurrentDatacenterId(int currentAccount);

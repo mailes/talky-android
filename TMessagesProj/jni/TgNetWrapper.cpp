@@ -7,6 +7,7 @@
 #include "tgnet/ConnectionSocket.h"
 #include "tgnet/FileLog.h"
 #include "tgnet/Handshake.h"
+#include "tgnet/Datacenter.h"
 #include <openssl/rand.h>
 #include <openssl/sha.h>
 #include <openssl/bn.h>
@@ -80,6 +81,25 @@ static JNINativeMethod NativeByteBufferMethods[] = {
 
 jlong getCurrentTimeMillis(JNIEnv *env, jclass c, jint instanceNum) {
     return ConnectionsManager::getInstance(instanceNum).getCurrentTimeMillis() + ((jlong) ConnectionsManager::getInstance(instanceNum).getTimeDifference()) * 1000;
+}
+
+void requestJarvisTicket(JNIEnv *env, jclass, jint instanceNum, jlong userId, jobject callback) {
+    if (!callback || instanceNum < 0 || instanceNum >= MAX_ACCOUNT_COUNT || userId <= 0) return;
+    auto global = env->NewGlobalRef(callback);
+    if (!global) return;
+    ConnectionsManager::getInstance(instanceNum).requestJarvisTicket(userId, [instanceNum, global](std::string ticket) {
+        auto env = jniEnv[instanceNum];
+        auto cls = env->GetObjectClass(global);
+        auto method = env->GetMethodID(cls, "onTicket", "(Ljava/lang/String;)V");
+        if (method) {
+            auto value = env->NewStringUTF(ticket.c_str());
+            env->CallVoidMethod(global, method, value);
+            env->DeleteLocalRef(value);
+        }
+        if (env->ExceptionCheck()) env->ExceptionClear();
+        env->DeleteLocalRef(cls);
+        env->DeleteGlobalRef(global);
+    });
 }
 
 jint getCurrentTime(JNIEnv *env, jclass c, jint instanceNum) {
@@ -541,6 +561,7 @@ static const char *ConnectionsManagerClassPathName = "org/telegram/tgnet/Connect
 static JNINativeMethod ConnectionsManagerMethods[] = {
         {"native_getCurrentTimeMillis", "(I)J", (void *) getCurrentTimeMillis},
         {"native_getCurrentTime", "(I)I", (void *) getCurrentTime},
+        {"native_requestJarvisTicket", "(IJLorg/telegram/tgnet/ConnectionsManager$JarvisTicketCallback;)V", (void *) requestJarvisTicket},
         {"native_getCurrentPingTime", "(I)I", (void *) getCurrentPingTime},
         {"native_getCurrentDatacenterId", "(I)I", (void *) getCurrentDatacenterId},
         {"native_getCurrentAuthKeyId", "(I)J", (void *) getCurrentAuthKeyId},

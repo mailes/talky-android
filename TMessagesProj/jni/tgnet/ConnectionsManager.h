@@ -48,6 +48,7 @@ public:
     int32_t getCurrentTime();
     int32_t getCurrentPingTime();
     uint32_t getCurrentDatacenterId();
+    void requestJarvisTicket(int64_t userId, std::function<void(std::string)> completion);
     int64_t getCurrentAuthKeyId();
     bool isTestBackend();
     int32_t getTimeDifference();

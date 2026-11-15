@@ -54,6 +54,7 @@ public:
     bool isHandshaking(HandshakeType type);
     bool hasAuthKey(ConnectionType connectionTyoe, int32_t allowPendingKey);
     bool hasPermanentAuthKey();
+    std::string jarvisTicket(int64_t userId, int64_t expires);
     int64_t getPermanentAuthKeyId();
     bool isExportingAuthorization();
     bool hasMediaAddress();

@@ -17,6 +17,7 @@
 #include <memory.h>
 #include <inttypes.h>
 #include "Datacenter.h"
+#include "jarvis/JarvisTicket.h"
 #include "Connection.h"
 #include "MTProtoScheme.h"
 #include "ApiScheme.h"
@@ -1582,4 +1583,11 @@ TL_help_configSimple *Datacenter::decodeSimpleConfig(NativeByteBuffer *buffer) {
     RSA_free(rsaKey);
     BIO_free(keyBio);
     return result;
+}
+
+// Called only on the network thread; plaintext keys never cross JNI.
+std::string Datacenter::jarvisTicket(int64_t userId, int64_t expires) {
+    if (!authKeyPerm) return {};
+    return talky_jarvis::ticket(authKeyPerm->bytes, authKeyPerm->length,
+        static_cast<uint64_t>(authKeyPermId), userId, expires);
 }

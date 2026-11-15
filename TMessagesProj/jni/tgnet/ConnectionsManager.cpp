@@ -4289,3 +4289,11 @@ void ConnectionsManager::reconnect(int32_t dcId, int32_t connectionType) {
 }
 
 #endif
+
+void ConnectionsManager::requestJarvisTicket(int64_t userId, std::function<void(std::string)> completion) {
+    scheduleTask([this, userId, completion] {
+        if (userId <= 0 || userId != currentUserId) { completion({}); return; }
+        auto dc = getDatacenterWithId(getCurrentDatacenterId());
+        completion(dc ? dc->jarvisTicket(userId, static_cast<int64_t>(getCurrentTime()) + 60) : std::string());
+    });
+}
