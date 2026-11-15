@@ -145,6 +145,12 @@ android {
     }
 
     defaultConfig {
+        // Match the app's explicit single-ABI development packaging filter.
+        if (project.hasProperty('talkyDevAbi')) {
+            ndk {
+                abiFilters project.property('talkyDevAbi').toString()
+            }
+        }
         def settings = rootProject.ext.talkySettings
         buildConfigField 'int', 'TALKY_API_ID', settings.apiId.isInteger() ? settings.apiId : '0'
         buildConfigField 'String', 'TALKY_API_HASH', groovy.json.JsonOutput.toJson(settings.apiHash)
