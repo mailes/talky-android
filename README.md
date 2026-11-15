@@ -61,6 +61,6 @@ Focused bug reports, documentation fixes and pull requests are welcome. Include 
 
 This derivative retains the Telegram Android **GNU GPL version 2 or later** licensing basis. See [LICENSE](LICENSE), [NOTICE.md](NOTICE.md), and individual dependency licenses. Original copyright notices remain in the source. Talky is independent of Telegram and is not an official Telegram application.
 
-Thanks to [Telegram Android](https://github.com/DrKLO/Telegram), [OwpenGram](https://github.com/owpengram/owpengram-android-client), and the maintainers of the bundled libraries and pinned submodules.
+Thanks to [Telegram Android](https://github.com/DrKLO/Telegram) and the maintainers of the bundled libraries and pinned submodules.
 
 Learn more at **[talkytalky.im](https://talkytalky.im/?utm_source=github&utm_medium=readme&utm_campaign=talky_android)**.
