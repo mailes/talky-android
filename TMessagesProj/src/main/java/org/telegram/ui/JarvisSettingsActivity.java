@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.Utilities;
@@ -170,7 +171,10 @@ public class JarvisSettingsActivity extends BaseFragment {
                     }
                     try {
                         loadedOverview = client.overview(ticket);
-                    } catch (Exception ignored) {
+                    } catch (Exception error) {
+                        // The rest of the screen still works without it; the
+                        // log is what tells us why usage/chats are missing.
+                        FileLog.e("jarvis: overview failed", error);
                     }
                 } catch (JarvisManageClient.ManageException error) {
                     failure = message(error.failure);
@@ -288,6 +292,18 @@ public class JarvisSettingsActivity extends BaseFragment {
         }
         addInfo(t("Encrypted on Talky servers and used for server-side calls. Deleting it does not change the account's model source.", "加密保存在 Talky 服务器，用于服务端调用。删除它不会改变账号的模型来源。"));
 
+        if (overview != null) {
+            addHeader(t("Usage today", "今日用量"));
+            boolean premium = overview.optBoolean("premium", false);
+            addValue(t("Chat turns", "对话轮次"), usageValue(premium, "chat_turns", "chat_limit"), true, null);
+            addValue(t("Summaries", "摘要"), usageValue(premium, "summaries", "summary_limit"), false, null);
+            if (premium) {
+                addInfo(t("Premium has no daily limit. Counters reset at 00:00 UTC.", "Premium 没有每日限额。计数在 UTC 0 点重置。"));
+            } else {
+                addInfo(t("Free accounts get these turns and summaries each day; counters reset at 00:00 UTC. Premium and your own key do not use them.", "免费账号每天获得这些对话轮次与摘要次数，计数在 UTC 0 点重置。Premium 和自带 Key 不占用这些额度。"));
+            }
+        }
+
         addHeader(t("Authorized chats", "已授权会话"));
         JSONArray chats = overview != null ? overview.optJSONArray("chats") : null;
         if (chats != null) {
@@ -303,7 +319,9 @@ public class JarvisSettingsActivity extends BaseFragment {
             }
         }
         addAction(t("Authorize a chat", "授权一个会话"), false, v -> presentAvailableChats());
-        if (chats == null || chats.length() == 0) {
+        if (overview == null) {
+            addInfo(t("Could not load your authorized chats. Reopen this screen to try again.", "无法加载已授权会话，请重新进入此页面重试。"));
+        } else if (chats == null || chats.length() == 0) {
             addInfo(t("No chats are authorized yet. Jarvis can only read chats you authorize here or with /grant.", "还没有授权任何会话。Jarvis 只能读取你在这里或用 /grant 授权的会话。"));
         } else {
             addInfo(t("Jarvis reads through your membership. Leaving a group or revoking the grant removes access immediately.", "Jarvis 通过你的成员身份读取。退群或撤销授权会立即失去访问。"));
@@ -332,6 +350,16 @@ public class JarvisSettingsActivity extends BaseFragment {
             didFocusKeys = true;
             scrollView.post(() -> scrollView.smoothScrollTo(0, Math.max(0, deviceKeyRow.getTop() - dp(56))));
         }
+    }
+
+    /** "used / limit" for a free account, or the unlimited marker for Premium. */
+    private String usageValue(boolean premium, String usedKey, String limitKey) {
+        if (premium) {
+            return t("Unlimited", "不限");
+        }
+        int used = overview != null ? overview.optInt(usedKey, 0) : 0;
+        int limit = overview != null ? overview.optInt(limitKey, 0) : 0;
+        return used + " / " + limit;
     }
 
     private String modeLabel() {
