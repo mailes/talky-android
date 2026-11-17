@@ -3,7 +3,10 @@ package org.telegram.ui;
 import static org.telegram.messenger.AndroidUtilities.dp;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.text.InputType;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +35,10 @@ import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
 import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.LayoutHelper;
+import org.telegram.ui.Components.TypefaceSpan;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * In-chat local answer. Opened by /ask in a group or channel; it reads the
@@ -103,6 +110,51 @@ public class JarvisAskActivity extends BaseFragment {
     private String t(String en, String zh) {
         java.util.Locale locale = LocaleController.getInstance().getCurrentLocale();
         return locale != null && locale.getLanguage().startsWith("zh") ? zh : en;
+    }
+
+    private static final Pattern MARKDOWN_BOLD = Pattern.compile("\\*\\*(.+?)\\*\\*", Pattern.DOTALL);
+    private static final Pattern MARKDOWN_HEADING = Pattern.compile("(?m)^[ \\t]*#{1,6}[ \\t]+");
+    private static final Pattern MARKDOWN_CODE = Pattern.compile("`([^`\\n]+)`");
+    private static final Pattern MARKDOWN_ITALIC = Pattern.compile("(?<!\\*)\\*([^*\\n]+)\\*(?!\\*)");
+
+    /**
+     * Models answer in Markdown; a raw TextView would show the asterisks and
+     * backticks literally. This applies the three markers that actually appear
+     * in answers (bold, inline code, italic) and drops heading hashes.
+     */
+    private static CharSequence renderAnswer(String answer) {
+        // Heading markers only add noise once the line is plain text.
+        SpannableStringBuilder text = new SpannableStringBuilder(
+                MARKDOWN_HEADING.matcher(answer).replaceAll(""));
+        applyMarkdown(text, MARKDOWN_BOLD, 0);
+        applyMarkdown(text, MARKDOWN_CODE, 2);
+        applyMarkdown(text, MARKDOWN_ITALIC, 1);
+        return text;
+    }
+
+    private static void applyMarkdown(SpannableStringBuilder text, Pattern pattern, int kind) {
+        Matcher matcher = pattern.matcher(text);
+        java.util.ArrayList<int[]> matches = new java.util.ArrayList<>();
+        while (matcher.find()) {
+            if (matcher.end(1) > matcher.start(1)) {
+                matches.add(new int[]{matcher.start(), matcher.start(1), matcher.end(1), matcher.end()});
+            }
+        }
+        // Back to front: deleting a later delimiter cannot shift an earlier span.
+        for (int i = matches.size() - 1; i >= 0; i--) {
+            int[] m = matches.get(i);
+            // Telegram's TypefaceSpan with the app's own faces: the TextView's
+            // base face is Roboto Medium, where StyleSpan(BOLD) draws no
+            // differently, which is why the first attempt showed plain text.
+            Object span = kind == 0
+                    ? new TypefaceSpan(AndroidUtilities.bold())
+                    : kind == 1
+                    ? new TypefaceSpan(AndroidUtilities.getTypeface("fonts/ritalic.ttf"))
+                    : new TypefaceSpan(Typeface.MONOSPACE);
+            text.setSpan(span, m[1], m[2], Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            text.delete(m[2], m[3]);
+            text.delete(m[0], m[1]);
+        }
     }
 
     @Override
@@ -240,7 +292,7 @@ public class JarvisAskActivity extends BaseFragment {
         content.removeAllViews();
         addHeader(t("Answer", "答案"), null);
         TextView answerView = new TextView(getParentActivity());
-        answerView.setText(answer);
+        answerView.setText(renderAnswer(answer));
         answerView.setTextSize(16);
         answerView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText, getResourceProvider()));
         answerView.setPadding(dp(21), dp(8), dp(21), dp(12));
