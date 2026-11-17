@@ -365,6 +365,12 @@ public class ApplicationLoader extends Application {
         applicationHandler = new Handler(applicationContext.getMainLooper());
 
         AndroidUtilities.runOnUIThread(() -> {
+            // LocaleController belongs to postInitApplication and must exist
+            // before any controller opens the database: the storage queue then
+            // reads muted dialogs, and NotificationsController's static
+            // initializer localizes its channel through LocaleController,
+            // which cannot be constructed off the main thread.
+            ApplicationLoader.postInitApplication();
             ApplicationLoader.ensureBackgroundWorkEnabled();
             ApplicationLoader.startPushService();
         });
