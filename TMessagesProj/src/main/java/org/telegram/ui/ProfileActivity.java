@@ -158,6 +158,7 @@ import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MediaDataController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
+import org.telegram.messenger.jarvis.JarvisLocalCredential;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.NotificationsController;
@@ -689,6 +690,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private int addToContactsRow;
     private int addToGroupButtonRow;
     private int addToGroupInfoRow;
+    private int jarvisSettingsRow;
     private int premiumRow;
     private int starsRow;
     private int tonRow;
@@ -4439,6 +4441,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 if (BulletinFactory.canShowBulletin(ProfileActivity.this)) {
                     BulletinFactory.createBanBulletin(ProfileActivity.this, false).show();
                 }
+            } else if (position == jarvisSettingsRow) {
+                presentFragment(new JarvisSettingsActivity());
             } else if (position == addToGroupButtonRow) {
                 try {
                     actionBar.getActionBarMenuOnItemClick().onItemClick(invite_to_group);
@@ -10902,6 +10906,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         bottomPaddingRow = -1;
         addToGroupButtonRow = -1;
         addToGroupInfoRow = -1;
+        jarvisSettingsRow = -1;
         infoStartRow = -1;
         infoEndRow = -1;
 
@@ -11168,6 +11173,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     if (BotStarsController.getInstance(currentAccount).getBotStarsBalance(userId).amount > 0 || BotStarsController.getInstance(currentAccount).hasTransactions(userId)) {
                         botStarsBalanceRow = rowCount++;
                     }
+                }
+
+                if (isBot && userId == JarvisLocalCredential.BOT_USER_ID) {
+                    jarvisSettingsRow = rowCount++;
                 }
 
                 if (user != null && isBot && !user.bot_nochats) {
@@ -14057,6 +14066,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         textCell.getImageView().setPadding(0, 0, 0, AndroidUtilities.dp(8));
                         textCell.setImageLeft(12);
                         setAvatarCell = textCell;
+                    } else if (position == jarvisSettingsRow) {
+                        textCell.setTextAndIcon(LocaleController.getString(R.string.JarvisSettings), R.drawable.msg_settings, true);
                     } else if (position == addToGroupButtonRow) {
                         textCell.setTextAndIcon(LocaleController.getString(R.string.AddToGroupOrChannel), R.drawable.msg_groups_create, false);
                     } else if (position == premiumRow) {
@@ -14470,7 +14481,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         position == questionRow || position == devicesRow || position == filtersRow || position == stickersRow ||
                         position == faqRow || position == policyRow || position == owpengramRow || position == sendLogsRow || position == sendLastLogsRow ||
                         position == clearLogsRow || position == switchBackendRow || position == setAvatarRow ||
-                        position == addToGroupButtonRow || position == premiumRow || position == premiumGiftingRow ||
+                        position == jarvisSettingsRow || position == addToGroupButtonRow || position == premiumRow || position == premiumGiftingRow ||
                         position == businessRow || position == liteModeRow || position == birthdayRow || position == channelRow ||
                         position == starsRow || position == tonRow || position == linkedCommunityRow;
             }
@@ -14515,7 +14526,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     position == languageRow || position == dataRow || position == chatRow ||
                     position == questionRow || position == devicesRow || position == filtersRow || position == stickersRow ||
                     position == faqRow || position == policyRow || position == owpengramRow || position == sendLogsRow || position == sendLastLogsRow ||
-                    position == clearLogsRow || position == switchBackendRow || position == setAvatarRow || position == addToGroupButtonRow ||
+                    position == clearLogsRow || position == switchBackendRow || position == setAvatarRow || position == jarvisSettingsRow || position == addToGroupButtonRow ||
                     position == addToContactsRow || position == liteModeRow || position == premiumGiftingRow || position == businessRow ||
                     position == botStarsBalanceRow || position == botTonBalanceRow || position == channelBalanceRow || position == botPermissionLocation ||
                     position == botPermissionBiometry || position == botPermissionEmojiStatus || position == tonRow

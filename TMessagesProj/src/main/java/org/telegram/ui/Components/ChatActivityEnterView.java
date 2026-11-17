@@ -147,6 +147,10 @@ import org.telegram.messenger.SendMessagesHelper;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.SharedPrefsHelper;
 import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.jarvis.JarvisCommandText;
+import org.telegram.messenger.jarvis.JarvisLocalCredential;
+import org.telegram.ui.JarvisAskActivity;
+import org.telegram.ui.JarvisSettingsActivity;
 import org.telegram.messenger.UserObject;
 import org.telegram.messenger.Utilities;
 import org.telegram.messenger.VideoEditedInfo;
@@ -7358,6 +7362,34 @@ public class ChatActivityEnterView extends FrameLayout implements
     }
 
     public boolean sendMessage() {
+        // /setkey in the @jarvis private chat opens the native key settings.
+        // It is never sent: a key typed after the command would otherwise stay
+        // in the chat history. Covers both the command-menu selection and a
+        // manually typed command because both reach this send path.
+        if (!isEditingMessage() && dialog_id == JarvisLocalCredential.BOT_USER_ID && messageEditText != null) {
+            String commandText = messageEditText.getText().toString();
+            if (JarvisCommandText.isSetKeyCommand(commandText)) {
+                if (parentFragment != null) {
+                    parentFragment.presentFragment(new JarvisSettingsActivity(true));
+                }
+                messageEditText.setText("");
+                return true;
+            }
+        }
+        // /ask in a group or channel opens the local answer for that chat.
+        // The command is not sent: the excerpts and answer stay between the
+        // device and the user, and the server-issued source IDs remain the
+        // only clickable citations.
+        if (!isEditingMessage() && dialog_id < 0 && messageEditText != null) {
+            String askQuestion = JarvisCommandText.askQuestion(messageEditText.getText().toString());
+            if (askQuestion != null) {
+                if (parentFragment != null) {
+                    parentFragment.presentFragment(new JarvisAskActivity(dialog_id, askQuestion));
+                }
+                messageEditText.setText("");
+                return true;
+            }
+        }
         if (richDraftActive && !UserConfig.getInstance(currentAccount).isPremium()) {
             RichEditor.openConversionSheet(getContext(), this::openRichEditorWithoutFormatting, () -> {
                 if (parentFragment != null) {
