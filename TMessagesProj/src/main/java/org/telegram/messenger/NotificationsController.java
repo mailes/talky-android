@@ -43,6 +43,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.provider.Settings;
@@ -262,6 +263,17 @@ public class NotificationsController extends BaseController implements Notificat
 
     public static void checkOtherNotificationsChannel() {
         if (Build.VERSION.SDK_INT < 26) {
+            return;
+        }
+        // The channel name below comes from LocaleController, whose constructor
+        // only works on the main thread. This method also runs from this class's
+        // static initializer, which startup can reach on the storage queue while
+        // the main thread is still inside LocaleController's constructor (it
+        // loads MessagesController, which opens the database). Constructing the
+        // locale there aborts the process, so channel setup waits for the main
+        // thread instead.
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            AndroidUtilities.runOnUIThread(NotificationsController::checkOtherNotificationsChannel);
             return;
         }
         SharedPreferences preferences = null;
