@@ -10660,6 +10660,9 @@
     <string name="SettingsAccounts">Accounts</string>
     <string name="SettingsAccountInfo">Number, Username, Bio</string>
     <string name="SettingsChat">Chat Settings</string>
+    <string name="JarvisSettings">Jarvis settings</string>
+    <string name="JarvisAsk">Ask Jarvis</string>
+    <string name="JarvisLocalKey">Local model</string>
     <string name="SettingsChatInfo">Wallpaper, Night Mode, Animations</string>
     <string name="SettingsPrivacySecurity">Privacy &amp; Security</string>
     <string name="SettingsPrivacySecurityInfo">Last Seen, Devices, Passkeys</string>

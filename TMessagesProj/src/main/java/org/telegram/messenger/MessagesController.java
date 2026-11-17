@@ -510,6 +510,9 @@ public class MessagesController extends BaseController implements NotificationCe
     // official Telegram network, and not other forks). Mirrors the desktop
     // OwpengramAccountHost gate on appConfig().get<bool>("owpengram").
     public boolean owpengramServer;
+    // Trusted Jarvis management origin, published by the server's appConfig.
+    // The native settings page validates it as an HTTPS root before use.
+    public String jarvisManageOrigin;
     public int maxGroupCount;
     public int maxBroadcastCount = 100;
     public int maxMegagroupCount;
@@ -1595,6 +1598,7 @@ public class MessagesController extends BaseController implements NotificationCe
         ratingDecay = mainPreferences.getInt("ratingDecay", 2419200);
         linkPrefix = mainPreferences.getString("linkPrefix", "t.me");
         owpengramServer = mainPreferences.getBoolean("owpengramServer", false);
+        jarvisManageOrigin = mainPreferences.getString("jarvisManageOrigin", null);
         callReceiveTimeout = mainPreferences.getInt("callReceiveTimeout", 20000);
         callRingTimeout = mainPreferences.getInt("callRingTimeout", 90000);
         callConnectTimeout = mainPreferences.getInt("callConnectTimeout", 30000);
@@ -2662,6 +2666,19 @@ public class MessagesController extends BaseController implements NotificationCe
                     if (val != owpengramServer) {
                         owpengramServer = val;
                         editor.putBoolean("owpengramServer", owpengramServer);
+                        changed = true;
+                    }
+                    break;
+                }
+                case "jarvis_manage_origin": {
+                    String val = value.value instanceof TLRPC.TL_jsonString ? ((TLRPC.TL_jsonString) value.value).value : null;
+                    if (!TextUtils.equals(val, jarvisManageOrigin)) {
+                        jarvisManageOrigin = val;
+                        if (val == null) {
+                            editor.remove("jarvisManageOrigin");
+                        } else {
+                            editor.putString("jarvisManageOrigin", val);
+                        }
                         changed = true;
                     }
                     break;
@@ -5596,6 +5613,7 @@ public class MessagesController extends BaseController implements NotificationCe
         verifyAgeBotUsername = null;
         verifyAgeCountry = "GB";
         ignoreRestrictionReasons = new HashSet<String>();
+        jarvisManageOrigin = null;
         mainPreferences.edit()
             .remove("starsLocked")
             .remove("getfileExperimentalParams")
@@ -5611,6 +5629,7 @@ public class MessagesController extends BaseController implements NotificationCe
             .remove("verifyAgeBotUsername")
             .remove("verifyAgeCountry")
             .remove("ignoreRestrictionReasons")
+            .remove("jarvisManageOrigin")
             .apply();
     }
 

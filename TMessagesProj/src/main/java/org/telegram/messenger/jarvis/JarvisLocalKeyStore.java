@@ -49,7 +49,11 @@ public final class JarvisLocalKeyStore {
     public void save(JarvisLocalCredential credential) throws Exception {
         synchronized (accountLock) {
             JSONObject value = new JSONObject();
+            value.put("version", 2);
             value.put("provider", credential.provider.name());
+            value.put("format", credential.format.name());
+            value.put("base_url", credential.baseUrl);
+            value.put("models", new org.json.JSONArray(credential.models));
             value.put("model", credential.model);
             value.put("key", credential.secret());
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
@@ -86,8 +90,32 @@ public final class JarvisLocalKeyStore {
                 cipher.updateAAD(alias.getBytes(StandardCharsets.UTF_8));
                 byte[] plain = cipher.doFinal(stored, 1 + ivLength, stored.length - 1 - ivLength);
                 JSONObject value = new JSONObject(new String(plain, StandardCharsets.UTF_8));
-                return new JarvisLocalCredential(JarvisLocalCredential.Provider.valueOf(value.getString("provider")),
-                        value.getString("model"), value.getString("key"));
+                JarvisLocalCredential.Provider provider = JarvisLocalCredential.Provider.parse(value.optString("provider"));
+                JarvisLocalCredential.Format format = JarvisLocalCredential.Format.parse(value.optString("format"));
+                String baseUrl = value.optString("base_url", "");
+                java.util.List<String> models = new java.util.ArrayList<>();
+                org.json.JSONArray storedModels = value.optJSONArray("models");
+                if (storedModels != null) {
+                    for (int i = 0; i < storedModels.length(); i++) {
+                        String model = storedModels.optString(i, "").trim();
+                        if (!model.isEmpty()) {
+                            models.add(model);
+                        }
+                    }
+                }
+                String selected = value.optString("model", "");
+                if (models.isEmpty()) {
+                    models.add(selected);
+                }
+                if (format == null) {
+                    // Schema v1 stored only the provider; derive the transport from the preset.
+                    format = provider.format;
+                }
+                if (baseUrl.isEmpty()) {
+                    baseUrl = provider.baseUrl;
+                }
+                return new JarvisLocalCredential(provider, format, baseUrl, models, selected,
+                        value.getString("key"));
             } catch (Exception ignored) {
                 // Never include raw JSON, provider keys, or underlying exceptions in diagnostics.
                 throw new IllegalStateException("Local credential unavailable");
