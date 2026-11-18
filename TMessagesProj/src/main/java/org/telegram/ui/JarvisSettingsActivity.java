@@ -31,6 +31,7 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
 import org.telegram.ui.Cells.TextSettingsCell;
+import org.telegram.ui.Components.IconBackgroundColors;
 import org.telegram.ui.Components.LayoutHelper;
 
 import java.util.Locale;
@@ -264,7 +265,7 @@ public class JarvisSettingsActivity extends BaseFragment {
         }
 
         addHeader(t("Model source", "模型来源"));
-        addValue(t("Current source", "当前来源"), modeLabel(), true, v -> presentModePicker());
+        addValue(t("Current source", "当前来源"), modeLabel(), true, R.drawable.msg_bot, IconBackgroundColors.BLUE.top, v -> presentModePicker());
         addInfo(t("The model source is account-wide. A local key belongs to this device only; other devices need their own.", "模型来源是账号级设置。本机 Key 只属于这台设备，其他设备需要各自配置。"));
 
         addHeader(t("This device", "本设备"));
@@ -278,7 +279,7 @@ public class JarvisSettingsActivity extends BaseFragment {
         } else {
             deviceLabel = t("Not configured", "未配置");
         }
-        deviceKeyRow = addValue(t("Local key", "本机 Key"), deviceLabel, true, v -> presentDeviceKeyFlow());
+        deviceKeyRow = addValue(t("Local key", "本机 Key"), deviceLabel, true, R.drawable.ic_jarvis_key, IconBackgroundColors.ORANGE.top, v -> presentDeviceKeyFlow());
         if ("local_byok".equals(mode()) && deviceKey == null) {
             addInfo(t("This account is in local mode, but this device has no key. Local inference cannot run here until you add one.", "当前账号是本机模式，但这台设备没有 Key。添加 Key 之前，本机推理无法运行。"));
         } else {
@@ -286,17 +287,17 @@ public class JarvisSettingsActivity extends BaseFragment {
         }
 
         addHeader(t("Hosted key", "托管 Key"));
-        addValue(t("Hosted key", "托管 Key"), hostedKeyPresent() ? t("Configured", "已配置") : t("Not configured", "未配置"), true, v -> presentHostedKeyFlow());
+        addValue(t("Hosted key", "托管 Key"), hostedKeyPresent() ? t("Configured", "已配置") : t("Not configured", "未配置"), true, R.drawable.ic_jarvis_cloud, IconBackgroundColors.BLUE_DEEP.top, v -> presentHostedKeyFlow());
         if (hostedKeyPresent()) {
-            addAction(t("Delete hosted key", "删除托管 Key"), true, v -> confirmDeleteHostedKey());
+            addAction(t("Delete hosted key", "删除托管 Key"), true, 0, 0, v -> confirmDeleteHostedKey());
         }
         addInfo(t("Encrypted on Talky servers and used for server-side calls. Deleting it does not change the account's model source.", "加密保存在 Talky 服务器，用于服务端调用。删除它不会改变账号的模型来源。"));
 
         if (overview != null) {
             addHeader(t("Usage today", "今日用量"));
             boolean premium = overview.optBoolean("premium", false);
-            addValue(t("Chat turns", "对话轮次"), usageValue(premium, "chat_turns", "chat_limit"), true, null);
-            addValue(t("Summaries", "摘要"), usageValue(premium, "summaries", "summary_limit"), false, null);
+            addValue(t("Chat turns", "对话轮次"), usageValue(premium, "chat_turns", "chat_limit"), true, R.drawable.msg_message, IconBackgroundColors.GREEN.top, null);
+            addValue(t("Summaries", "摘要"), usageValue(premium, "summaries", "summary_limit"), false, R.drawable.msg_stats, IconBackgroundColors.CYAN.top, null);
             if (premium) {
                 addInfo(t("Premium has no daily limit. Counters reset at 00:00 UTC.", "Premium 没有每日限额。计数在 UTC 0 点重置。"));
             } else {
@@ -315,10 +316,10 @@ public class JarvisSettingsActivity extends BaseFragment {
                 long peerId = chat.optLong("peer_id", 0);
                 String title = chat.optString("title", "#" + peerId);
                 boolean left = chat.optBoolean("left", false);
-                addValue(title, left ? t("Left", "已离开") : "", i != chats.length() - 1, v -> confirmRevoke(peerId, title));
+                addValue(title, left ? t("Left", "已离开") : "", i != chats.length() - 1, R.drawable.msg_groups, IconBackgroundColors.PURPLE.top, v -> confirmRevoke(peerId, title));
             }
         }
-        addAction(t("Authorize a chat", "授权一个会话"), false, v -> presentAvailableChats());
+        addAction(t("Authorize a chat", "授权一个会话"), false, R.drawable.msg_add, IconBackgroundColors.ORANGE_DEEP.top, v -> presentAvailableChats());
         if (overview == null) {
             addInfo(t("Could not load your authorized chats. Reopen this screen to try again.", "无法加载已授权会话，请重新进入此页面重试。"));
         } else if (chats == null || chats.length() == 0) {
@@ -385,19 +386,26 @@ public class JarvisSettingsActivity extends BaseFragment {
         return header;
     }
 
-    private TextSettingsCell addValue(String title, String value, boolean divider, View.OnClickListener listener) {
+    private TextSettingsCell addValue(String title, String value, boolean divider, int icon, int iconColor, View.OnClickListener listener) {
         TextSettingsCell cell = new TextSettingsCell(getParentActivity(), getResourceProvider());
         cell.setTextAndValue(title, value, divider);
         cell.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite, getResourceProvider()));
+        if (icon != 0) {
+            // Colored tiles with a white glyph, matching the app's settings page.
+            cell.setColorfulIcon(icon, iconColor);
+        }
         cell.setOnClickListener(listener);
         content.addView(cell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         return cell;
     }
 
-    private TextSettingsCell addAction(String title, boolean destructive, View.OnClickListener listener) {
+    private TextSettingsCell addAction(String title, boolean destructive, int icon, int iconColor, View.OnClickListener listener) {
         TextSettingsCell cell = new TextSettingsCell(getParentActivity(), getResourceProvider());
         cell.setText(title, true);
         cell.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite, getResourceProvider()));
+        if (icon != 0) {
+            cell.setColorfulIcon(icon, iconColor);
+        }
         if (destructive) {
             cell.setTextColor(Theme.getColor(Theme.key_text_RedRegular, getResourceProvider()));
         }
